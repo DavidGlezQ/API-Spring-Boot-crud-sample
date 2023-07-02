@@ -14,6 +14,8 @@ import java.util.Optional;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    HashMap<String, Object> data;
+
 
     //DI
     @Autowired
@@ -27,7 +29,7 @@ public class ProductService {
     public ResponseEntity<Object> newProduct(Product product) {
         //Variable opcional
         Optional<Product> res = productRepository.findProductByName(product.getName());
-        HashMap<String, Object> data = new HashMap<>();
+        data = new HashMap<>();
 
         if (res.isPresent() && product.getId() == null) {
             data.put("error", true);
@@ -43,5 +45,23 @@ public class ProductService {
         productRepository.save(product);
         data.put("datos", product);
         return new ResponseEntity<>(data, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<Object> deleteProduct(Long id) {
+
+        data = new HashMap<>();
+        boolean exist = this.productRepository.existsById(id);
+
+        if (!exist) {
+            data.put("error", true);
+            data.put("message", "No existe un producto con ese id");
+            //Respuesta personalizada
+            return new ResponseEntity<>(data, HttpStatus.CONFLICT);
+        }
+
+        productRepository.deleteById(id);
+        data.put("message", "Producto eliminado");
+        //Respuesta personalizada
+        return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
     }
 }
