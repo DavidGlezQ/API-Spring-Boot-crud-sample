@@ -1,31 +1,39 @@
 package com.example.crud.product;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.Period;
+
+@Entity
+@Table
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String name;
     private float price;
     private LocalDate date;
-    private int antique;
 
+    @Transient
+    private int antique;
+    // con esto le decimos a la base de datos que es un campo transitorio, es decir que es un campo calculado y que no lo va a crear en la db
     public Product() {}
 
     //Constructor para insert
-    public Product(Long id, String name, float price, LocalDate date, int antique) {
+    public Product(Long id, String name, float price, LocalDate date) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.date = date;
-        this.antique = antique;
     }
 
     //Constructor para update
-    public Product(String name, float price, LocalDate date, int antique) {
+    public Product(String name, float price, LocalDate date) {
         this.name = name;
         this.price = price;
         this.date = date;
-        this.antique = antique;
     }
 
     public Long getId() {
@@ -61,7 +69,8 @@ public class Product {
     }
 
     public int getAntique() {
-        return antique;
+        //Calculamos el dato de esta manera
+        return Period.between(this.date, LocalDate.now()).getYears();
     }
 
     public void setAntique(int antique) {

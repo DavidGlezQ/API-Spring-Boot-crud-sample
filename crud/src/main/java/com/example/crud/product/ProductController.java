@@ -1,13 +1,13 @@
 package com.example.crud.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(path = "api/v1/products")
@@ -24,6 +24,16 @@ public class ProductController {
     @GetMapping
     public List<Product> getProduct() {
         return productService.getProducts(); // di object
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> insertProduct(@RequestBody Product product) {
+        return this.productService.newProduct(product);
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> updateProduct(@RequestBody Product product) {
+        return this.productService.newProduct(product);
     }
 
 }
